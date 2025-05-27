@@ -8,7 +8,7 @@ namespace EventSystemComponents
     private readonly Dictionary<Type, Delegate> _events = new Dictionary<Type, Delegate>();
 
     public void SubscribeEvent<T> (Action<T> action)
-      where T : EventBase
+      where T : BaseEvent
     {
       Type type = typeof(T);
 
@@ -22,7 +22,7 @@ namespace EventSystemComponents
     }
 
     public void UnsubscribeEvent<T> (Action<T> action)
-      where T : EventBase
+      where T : BaseEvent
     {
       Type type = typeof(T);
 
@@ -36,7 +36,7 @@ namespace EventSystemComponents
     }
 
     public void Fire<T> (T signal)
-      where T : EventBase
+      where T : BaseEvent
     {
       Type signalType = typeof(T);
 

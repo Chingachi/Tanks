@@ -1,5 +1,5 @@
 ﻿namespace EventSystemComponents
 {
-  public class EventBase
+  public class BaseEvent
   {}
 }
