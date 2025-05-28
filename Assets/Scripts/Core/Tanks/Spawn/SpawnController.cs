@@ -10,10 +10,12 @@ namespace Core.Tanks.Spawn
 {
   public class SpawnController : MonoBehaviour
   {
+    private readonly Dictionary<string, BaseAi> _spawnedTanks = new Dictionary<string, BaseAi>();
     [SerializeField]
     private SpawnPoint [] _spawnPoints;
     [SerializeField]
-    private BaseTankAi _baseTankAiPrefab; //TODO: Change when it comes to polymorph mechanics
+    private BaseAi _baseTankAiPrefab; //TODO: Change when it comes to polymorph mechanics
+
     [SerializeField]
     private Transform _tanksContainer;
     [SerializeField]
@@ -21,8 +23,7 @@ namespace Core.Tanks.Spawn
     [SerializeField]
     private int _tanksLimit = 20;
 
-    private SimpleMonoObjectPool<BaseTankAi> _tanksPool;
-    private readonly Dictionary<string, BaseTankAi> _spawnedTanks = new Dictionary<string, BaseTankAi>();
+    private SimpleMonoObjectPool<BaseAi> _tanksPool;
 
     private DiContainer _container;
     private EventManager _eventManager;
@@ -52,7 +53,7 @@ namespace Core.Tanks.Spawn
         return;
       }
 
-      BaseTankAi tank = _spawnedTanks[eventData.Id];
+      BaseAi tank = _spawnedTanks[eventData.Id];
       _spawnedTanks.Remove(tank.Id);
       tank.gameObject.SetActive(false);
       _tanksPool.Return(tank);
@@ -60,7 +61,7 @@ namespace Core.Tanks.Spawn
 
     private void CreatePool()
     {
-      _tanksPool = new SimpleMonoObjectPool<BaseTankAi>(_container, _baseTankAiPrefab, _tanksContainer, _tanksLimit);
+      _tanksPool = new SimpleMonoObjectPool<BaseAi>(_container, _baseTankAiPrefab, _tanksContainer, _tanksLimit);
     }
 
     private async void StartSpawning()
@@ -77,7 +78,7 @@ namespace Core.Tanks.Spawn
         return;
       }
 
-      BaseTankAi tank = _tanksPool.Get();
+      BaseAi tank = _tanksPool.Get();
       Transform spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Length)].transform;
 
       tank.transform.position = spawnPoint.position;
