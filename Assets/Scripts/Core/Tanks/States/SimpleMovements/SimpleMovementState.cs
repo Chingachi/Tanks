@@ -2,7 +2,7 @@
 using UnityEngine;
 namespace Core.Tanks.States.SimpleMovements
 {
-  public class SimpleMovementState : TankState<SimpleMovementStateContext>
+  public class SimpleMovementState : BaseTankState<SimpleMovementStateContext>
   {
     protected float _changeTimer;
     protected Quaternion _targetRotation;

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4779066831159268557}
   - component: {fileID: 4148093084824749203}
   - component: {fileID: 3963627771098298276}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cannon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 4329971037833934487}
   - component: {fileID: 6649001413324557112}
   - component: {fileID: 4429425587554256044}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: ChasingTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -248,7 +248,7 @@ GameObject:
   - component: {fileID: 7444835840854402074}
   - component: {fileID: 61995497330660797}
   - component: {fileID: 7051438143210409076}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: FrontCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 1891141147538771669}
   - component: {fileID: 4104988470801985707}
   - component: {fileID: 3899797492488304600}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}

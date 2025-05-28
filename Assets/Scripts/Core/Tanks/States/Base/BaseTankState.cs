@@ -1,11 +1,11 @@
 ﻿namespace Core.Tanks.States.Base
 {
-  public abstract class TankState<TContext> : BaseTankState
+  public abstract class BaseTankState<TContext> : BaseTankState
     where TContext : BaseStateContext
   {
     protected readonly TContext _context;
 
-    public TankState (TContext context)
+    public BaseTankState (TContext context)
     {
       _context = context;
     }

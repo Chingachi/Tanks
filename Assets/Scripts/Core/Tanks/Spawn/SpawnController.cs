@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.MonoPool;
+using Core.Player;
 using Core.Tanks.AI;
 using Core.Tanks.Events;
 using Cysharp.Threading.Tasks;
@@ -11,6 +12,13 @@ namespace Core.Tanks.Spawn
   public class SpawnController : MonoBehaviour
   {
     private readonly Dictionary<string, BaseAi> _spawnedTanks = new Dictionary<string, BaseAi>();
+    [SerializeField]
+    private PlayerTank _playerPrefab;
+    [SerializeField]
+    private Transform _playerSpawnPoint;
+    [SerializeField]
+    private float _playerRespawnTime = 1;
+
     [SerializeField]
     private SpawnPoint [] _spawnPoints;
     [SerializeField]
@@ -28,6 +36,8 @@ namespace Core.Tanks.Spawn
     private DiContainer _container;
     private EventManager _eventManager;
 
+    private PlayerTank _player;
+
     private void Awake()
     {
       _container.Inject(this);
@@ -37,7 +47,8 @@ namespace Core.Tanks.Spawn
     private void Start()
     {
       CreatePool();
-      StartSpawning();
+      SpawnPlayer();
+      StartSpawningAi();
     }
 
     [Inject]
@@ -64,12 +75,34 @@ namespace Core.Tanks.Spawn
       _tanksPool = new SimpleMonoObjectPool<BaseAi>(_container, _baseTankAiPrefab, _tanksContainer, _tanksLimit);
     }
 
-    private async void StartSpawning()
+    private async void StartSpawningAi()
     {
       do {
         SpawnTank();
         await UniTask.WaitForSeconds(_spawnInterval);
       } while (true);
+    }
+
+    private void SpawnPlayer()
+    {
+      if (_player == null) {
+        _player = Instantiate(_playerPrefab);
+        _container.Inject(_player);
+        _container.BindInstance(_player);
+        _player.OnDeath += HandlePlayerDeath;
+      }
+
+      _player.gameObject.SetActive(true);
+      _player.transform.position = _playerSpawnPoint.transform.position;
+      _player.transform.rotation = Quaternion.identity;
+      _player.HandleSpawn();
+    }
+
+    private async void HandlePlayerDeath()
+    {
+      _player.gameObject.SetActive(false);
+      await UniTask.WaitForSeconds(_playerRespawnTime);
+      SpawnPlayer();
     }
 
     private void SpawnTank()

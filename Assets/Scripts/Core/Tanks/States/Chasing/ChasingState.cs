@@ -1,9 +1,11 @@
-﻿using Core.Tanks.States.Base;
+﻿using System;
+using Core.Tanks.States.Base;
 using UnityEngine;
 namespace Core.Tanks.States.Chasing
 {
-  public class ChasingState : TankState<ChasingStateContext>
+  public class ChasingState : BaseTankState<ChasingStateContext>
   {
+    public event Action OnTargetDied;
 
     public ChasingState (ChasingStateContext context)
       : base(context)
@@ -14,6 +16,16 @@ namespace Core.Tanks.States.Chasing
 
     public override void UpdateState()
     {
+      if (_context.Target == null) {
+        return;
+      }
+
+      if (!_context.Target.Alive) {
+        OnTargetDied?.Invoke();
+
+        return;
+      }
+
       Vector3 targetRotation = _context.Target.transform.position - _context.Transform.position;
       targetRotation.y = 0f;
       targetRotation.Normalize();
