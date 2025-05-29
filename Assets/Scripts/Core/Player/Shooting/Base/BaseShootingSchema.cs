@@ -1,0 +1,54 @@
+﻿using Core.Projectiles;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.InputSystem;
+namespace Core.Player.Shooting.Base
+{
+  public abstract class BaseShootingSchema<T> : BaseShootingSchema
+    where T : ShootingContext
+  {
+    protected T _context;
+
+    public BaseShootingSchema (T context)
+    {
+      _context = context;
+      _context.Inputs.DefaultActions.Fire.performed += HandleShootingTrigger;
+    }
+
+    ~BaseShootingSchema()
+    {
+      _context.Inputs.DefaultActions.Fire.performed -= HandleShootingTrigger;
+    }
+
+    protected override void HandleShootingTrigger (InputAction.CallbackContext inputCallback)
+    {
+
+      Projectile projectile = _context.ProjectilePool.Get();
+      projectile.transform.position = _context.ShootingAnchor.transform.position;
+      projectile.SetLaunchLayer(_context.LaunchLayer, _context.TargetLayer);
+      projectile.gameObject.SetActive(true);
+      projectile.OnHit += HandleHit;
+      Shoot(projectile);
+    }
+
+    private async void Shoot (Projectile projectile)
+    {
+      Vector3 direction = _context.ShootingAnchor.forward.normalized;
+
+      while (projectile != null && projectile.gameObject.activeSelf) {
+        projectile.transform.Translate(direction, Space.World);
+        await UniTask.WaitForFixedUpdate();
+      }
+    }
+
+    private void HandleHit (Projectile projectile)
+    {
+      projectile.OnHit -= HandleHit;
+      _context.ProjectilePool.Return(projectile);
+    }
+  }
+  public abstract class BaseShootingSchema
+  {
+    protected abstract void HandleShootingTrigger (InputAction.CallbackContext inputCallback);
+  }
+}

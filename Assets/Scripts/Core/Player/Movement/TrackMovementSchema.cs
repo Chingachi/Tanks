@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using Core.Player.Movement.Base;
+using UnityEngine;
 namespace Core.Player.Movement
 {
-  public class TrackMovementSchema : BaseMovementSchema
+  public class TrackMovementSchema : BaseMovementSchema<MovementContext>
   {
     private float _leftTrackValue;
     private float _rightTrackValue;
 
-    public TrackMovementSchema (GameObject gameObject, float moveSpeed, float rotationSpeed, float rotationValue, GameInputs inputs)
-      : base(gameObject, moveSpeed, rotationSpeed, rotationValue, inputs)
+    public TrackMovementSchema (MovementContext context)
+      : base(context)
     {}
 
     public override void HandleInput()
@@ -26,12 +27,12 @@ namespace Core.Player.Movement
 
 
 
-      Quaternion rotation = _transform.rotation * Quaternion.Euler(0, GetRotation() * _rotationValue, 0);
-      Quaternion newRotation = Quaternion.RotateTowards(_rigidbody.rotation, rotation, _rotationSpeed * Time.fixedDeltaTime);
+      Quaternion rotation = _transform.rotation * Quaternion.Euler(0, GetRotation() * _context.RotationValue, 0);
+      Quaternion newRotation = Quaternion.RotateTowards(_rigidbody.rotation, rotation, _context.RotationSpeed * Time.fixedDeltaTime);
       _rigidbody.MoveRotation(newRotation);
 
 
-      _rigidbody.MovePosition(_rigidbody.position + GetMoveDirection(newRotation) * _moveSpeed * Time.fixedDeltaTime);
+      _rigidbody.MovePosition(_rigidbody.position + GetMoveDirection(newRotation) * _context.MoveSpeed * Time.fixedDeltaTime);
     }
 
     private float GetRotation()

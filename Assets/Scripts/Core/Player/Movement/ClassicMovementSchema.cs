@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using Core.Player.Movement.Base;
+using UnityEngine;
 namespace Core.Player.Movement
 {
-  public class ClassicMovementSchema : BaseMovementSchema
+  public class ClassicMovementSchema : BaseMovementSchema<MovementContext>
   {
     private Vector2 _input;
 
-    public ClassicMovementSchema (GameObject gameObject, float moveSpeed, float rotationSpeed, float rotationValue, GameInputs inputs)
-      : base(gameObject, moveSpeed, rotationSpeed, rotationValue, inputs)
+    public ClassicMovementSchema (MovementContext context)
+      : base(context)
     {}
 
     public override void HandleInput()
@@ -20,12 +21,12 @@ namespace Core.Player.Movement
         return;
       }
 
-      Quaternion rotation = _transform.rotation * Quaternion.Euler(0, _input.x * _rotationValue, 0);
-      Quaternion newRotation = Quaternion.RotateTowards(_rigidbody.rotation, rotation, _rotationSpeed * Time.fixedDeltaTime);
+      Quaternion rotation = _transform.rotation * Quaternion.Euler(0, _input.x * _context.RotationValue, 0);
+      Quaternion newRotation = Quaternion.RotateTowards(_rigidbody.rotation, rotation, _context.RotationSpeed * Time.fixedDeltaTime);
       _rigidbody.MoveRotation(newRotation);
 
       Vector3 direction = newRotation * new Vector3(0, 0, _input.y);
-      _rigidbody.MovePosition(_rigidbody.position + direction * _moveSpeed * Time.fixedDeltaTime);
+      _rigidbody.MovePosition(_rigidbody.position + direction * _context.MoveSpeed * Time.fixedDeltaTime);
     }
   }
 }

@@ -12,7 +12,7 @@ namespace Core.MonoPool
     private readonly T _prefab;
     private readonly DiContainer _container;
 
-    public SimpleMonoObjectPool (DiContainer container, T prefab, Transform parent, int initialSize = 10)
+    public SimpleMonoObjectPool (DiContainer container, T prefab, Transform parent = null, int initialSize = 10)
     {
       _container = container;
       _prefab = prefab;

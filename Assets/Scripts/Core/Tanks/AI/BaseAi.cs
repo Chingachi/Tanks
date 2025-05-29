@@ -10,8 +10,11 @@ namespace Core.Tanks.AI
   [RequireComponent(typeof(Rigidbody))]
   public abstract class BaseAi : MonoBehaviour
   {
+
     [Inject]
     protected readonly EventManager _eventManager;
+    [SerializeField]
+    private LayerMask _projectileLayer;
 
     protected Dictionary<Type, BaseTankState> _states;
 
@@ -26,6 +29,15 @@ namespace Core.Tanks.AI
     {
       _states = RegisterStates();
       RunFirstState();
+    }
+
+    private void OnTriggerEnter (Collider other)
+    {
+      if (((1 << other.gameObject.layer) & _projectileLayer) == 0) {
+        return;
+      }
+
+      HandleDestruction();
     }
 
     protected abstract void RunFirstState();
