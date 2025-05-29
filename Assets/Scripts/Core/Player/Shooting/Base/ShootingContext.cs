@@ -10,7 +10,6 @@ namespace Core.Player.Shooting.Base
     public SimpleMonoObjectPool<Projectile> ProjectilePool;
     public GameInputs Inputs;
     public Transform ShootingAnchor;
-    public LayerMask LaunchLayer;
-    public LayerMask TargetLayer;
+    public float CooldownTime;
   }
 }

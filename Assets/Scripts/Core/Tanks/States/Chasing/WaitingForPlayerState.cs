@@ -2,12 +2,12 @@
 using Core.Tanks.States.Idle;
 namespace Core.Tanks.States.Chasing
 {
-  public class ChasingIdleState : BaseIdleState
+  public class WaitingForPlayerState : BaseIdleState
   {
 
     private PlayerTank _player;
 
-    public ChasingIdleState (IdleStateContext context)
+    public WaitingForPlayerState (IdleStateContext context)
       : base(context)
     {}
 

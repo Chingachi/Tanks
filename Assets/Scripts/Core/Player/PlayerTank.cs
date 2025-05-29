@@ -8,6 +8,7 @@ using Core.Player.Shooting.FrontShooting;
 using Core.Player.Shooting.TurretShooting;
 using Core.Projectiles;
 using UnityEngine;
+using Utils;
 using Zenject;
 namespace Core.Player
 {
@@ -21,8 +22,6 @@ namespace Core.Player
     private FrontShootingContext _frontShootingContext;
     [SerializeField]
     private TurretShootingContext _turretShootingContext;
-    [SerializeField, Space]
-    private LayerMask _enemiesLayerMask;
 
 
     [Inject]
@@ -53,19 +52,39 @@ namespace Core.Player
       _movementSchema.UpdateMovement();
     }
 
-    private void OnCollisionEnter (Collision collision)
+    private void OnTriggerEnter (Collider collision)
     {
-      if (((1 << collision.gameObject.layer) & _enemiesLayerMask) == 0) {
+      if (((1 << collision.gameObject.layer) & Layers.Projectile) == 0) {
+        Debug.Log(1);
+
         return;
       }
 
-      Alive = false;
-      OnDeath?.Invoke();
+      if (((1 << collision.gameObject.GetComponent<Projectile>().TargetLayers) & Layers.Player) != 0) {
+        return;
+      }
+
+      HandleDeath();
+    }
+
+    private void OnCollisionEnter (Collision collision)
+    {
+      if (((1 << collision.gameObject.layer) & Layers.Enemy) == 0) {
+        return;
+      }
+
+      HandleDeath();
     }
 
     public void HandleSpawn()
     {
       Alive = true;
+    }
+
+    private void HandleDeath()
+    {
+      Alive = false;
+      OnDeath?.Invoke();
     }
 
     private void InitContexts()

@@ -28,7 +28,7 @@ namespace Core.Tanks.States.SimpleMovements
       _context.OnCollisionStay -= TryAvoid;
     }
 
-    private void HandleControls()
+    protected virtual void HandleControls()
     {
       HandleRotationChange();
       HandleMovement();
@@ -40,8 +40,8 @@ namespace Core.Tanks.States.SimpleMovements
       Quaternion newRotation = Quaternion.RotateTowards(_context.Rigidbody.rotation, _targetRotation, _context.RotationSpeed * Time.fixedDeltaTime);
       _context.Rigidbody.MoveRotation(newRotation);
 
-      Vector3 direction = newRotation * Vector3.forward;
-      _context.Rigidbody.MovePosition(_context.Rigidbody.position + direction * _context.MoveSpeed * Time.fixedDeltaTime);
+      Vector3 forward = newRotation * Vector3.forward;
+      _context.Rigidbody.velocity = forward * _context.MoveSpeed;
     }
 
     private void HandleRotationChange()
@@ -60,10 +60,6 @@ namespace Core.Tanks.States.SimpleMovements
       if (((1 << collision.gameObject.layer) & _context.IgnoredLayers) != 0) {
         return;
       }
-
-      // HandleDestruction(); // TODO: Handle destruction only on fire collision
-      //
-      // return;
 
       Vector3 normal = collision.contacts[0].normal;
       normal.y = 0f;

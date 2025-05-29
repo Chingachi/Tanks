@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Utils;
 namespace Core.Player.Shooting.Base
 {
   public abstract class BaseShootingSchema<T> : BaseShootingSchema
@@ -25,7 +26,7 @@ namespace Core.Player.Shooting.Base
 
       Projectile projectile = _context.ProjectilePool.Get();
       projectile.transform.position = _context.ShootingAnchor.transform.position;
-      projectile.SetLaunchLayer(_context.LaunchLayer, _context.TargetLayer);
+      projectile.SetLayers(Layers.Player, Layers.Enemy);
       projectile.gameObject.SetActive(true);
       projectile.OnHit += HandleHit;
       Shoot(projectile);

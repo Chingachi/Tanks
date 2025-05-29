@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18b270d7a566b244b86fa5336806b9a0, type: 2}
+  - {fileID: 2100000, guid: 318a4a570b166a4428867c34ec43fae3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -93,12 +93,12 @@ GameObject:
   m_Component:
   - component: {fileID: 5966337280381014114}
   - component: {fileID: 8246777610171707767}
-  - component: {fileID: 8330648243184614189}
+  - component: {fileID: 5734432035438446258}
   - component: {fileID: 4329971037833934487}
   - component: {fileID: 6649001413324557112}
   - component: {fileID: 4429425587554256044}
   m_Layer: 7
-  m_Name: ChasingTank
+  m_Name: MovingAndShootingTank
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,6 +119,7 @@ Transform:
   m_Children:
   - {fileID: 1891141147538771669}
   - {fileID: 2081972551539903729}
+  - {fileID: 6990624092182134995}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8246777610171707767
@@ -129,7 +130,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6377852843196195147}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &8330648243184614189
+--- !u!114 &5734432035438446258
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -138,17 +139,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 6377852843196195147}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a8bb2783b964b958d08922c22bb0fb2, type: 3}
+  m_Script: {fileID: 11500000, guid: cd902dc627914f928b1fa7a89a3dbd8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _projectileLayer:
     serializedVersion: 2
     m_Bits: 512
   _context:
+    MoveSpeed: 5
+    RotationSpeed: 30
+    MinChangeInterval: 2
+    MaxChangeInterval: 5
+    MaxTurnAngle: 120
+    IgnoredLayers:
+      serializedVersion: 2
+      m_Bits: 128
     Rigidbody: {fileID: 4429425587554256044}
     Transform: {fileID: 5966337280381014114}
-    RotationSpeed: 35
-    MoveSpeed: 5
+    Player: {fileID: 0}
+    ShootingContext:
+      ShootingAnchor: {fileID: 6990624092182134995}
+      LaunchLayer:
+        serializedVersion: 2
+        m_Bits: 128
+      TargetLayer:
+        serializedVersion: 2
+        m_Bits: 256
+      CooldownTime: 1
 --- !u!23 &4329971037833934487
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -169,7 +186,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18b270d7a566b244b86fa5336806b9a0, type: 2}
+  - {fileID: 2100000, guid: 318a4a570b166a4428867c34ec43fae3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -406,7 +423,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 18b270d7a566b244b86fa5336806b9a0, type: 2}
+  - {fileID: 2100000, guid: 318a4a570b166a4428867c34ec43fae3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -428,3 +445,34 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7998182552071286703
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6990624092182134995}
+  m_Layer: 7
+  m_Name: ShootingAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6990624092182134995
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7998182552071286703}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.488}
+  m_LocalScale: {x: 0.2511, y: 1, z: 0.3179}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5966337280381014114}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

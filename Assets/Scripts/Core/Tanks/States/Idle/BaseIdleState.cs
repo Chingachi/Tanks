@@ -4,7 +4,7 @@ namespace Core.Tanks.States.Idle
 {
   public abstract class BaseIdleState : BaseTankState<IdleStateContext>
   {
-    public event Action OnIdleComplete;
+    public event Action OnWaitingComplete;
 
     public BaseIdleState (IdleStateContext context)
       : base(context)
@@ -19,7 +19,7 @@ namespace Core.Tanks.States.Idle
         return;
       }
 
-      OnIdleComplete?.Invoke();
+      OnWaitingComplete?.Invoke();
     }
 
     public override void ExitState()

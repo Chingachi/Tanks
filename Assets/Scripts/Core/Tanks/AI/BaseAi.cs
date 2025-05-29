@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Core.Projectiles;
 using Core.Tanks.Events;
 using Core.Tanks.States.Base;
 using EventSystemComponents;
 using UnityEngine;
+using Utils;
 using Zenject;
 namespace Core.Tanks.AI
 {
@@ -34,6 +36,10 @@ namespace Core.Tanks.AI
     private void OnTriggerEnter (Collider other)
     {
       if (((1 << other.gameObject.layer) & _projectileLayer) == 0) {
+        return;
+      }
+
+      if (((1 << other.gameObject.GetComponent<Projectile>().TargetLayers) & Layers.Enemy) == 0) {
         return;
       }
 
