@@ -44,6 +44,24 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""LeftTrack"",
+                    ""type"": ""Value"",
+                    ""id"": ""c771efd1-34a2-43f6-a232-5010aff1ca6b"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""RightTrack"",
+                    ""type"": ""Value"",
+                    ""id"": ""f15e1d63-3480-4c7f-8880-ae74c55f3c41"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -61,7 +79,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""2D Vector"",
                     ""id"": ""7a31b9e7-cd55-4360-ae94-9583c0a41d78"",
-                    ""path"": ""2DVector"",
+                    ""path"": ""2DVector(mode=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -112,6 +130,72 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""7db2d565-706f-475a-869d-b46aef1c05af"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftTrack"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""3718734b-ece8-40f1-b3c6-ab3f2d4df0bd"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftTrack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""3f734f43-c111-4b26-940a-ddb02cb73cf0"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""LeftTrack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""d1017b15-68b7-4639-951b-e65fcb245d69"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightTrack"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""e0ab2160-d554-414f-9632-bc85e3772c69"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightTrack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""1ef296d0-91f9-4fa2-b596-edc39fa52572"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightTrack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -122,6 +206,8 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
         m_DefaultActions = asset.FindActionMap("DefaultActions", throwIfNotFound: true);
         m_DefaultActions_Movement = m_DefaultActions.FindAction("Movement", throwIfNotFound: true);
         m_DefaultActions_Fire = m_DefaultActions.FindAction("Fire", throwIfNotFound: true);
+        m_DefaultActions_LeftTrack = m_DefaultActions.FindAction("LeftTrack", throwIfNotFound: true);
+        m_DefaultActions_RightTrack = m_DefaultActions.FindAction("RightTrack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -185,12 +271,16 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     private List<IDefaultActionsActions> m_DefaultActionsActionsCallbackInterfaces = new List<IDefaultActionsActions>();
     private readonly InputAction m_DefaultActions_Movement;
     private readonly InputAction m_DefaultActions_Fire;
+    private readonly InputAction m_DefaultActions_LeftTrack;
+    private readonly InputAction m_DefaultActions_RightTrack;
     public struct DefaultActionsActions
     {
         private @GameInputs m_Wrapper;
         public DefaultActionsActions(@GameInputs wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_DefaultActions_Movement;
         public InputAction @Fire => m_Wrapper.m_DefaultActions_Fire;
+        public InputAction @LeftTrack => m_Wrapper.m_DefaultActions_LeftTrack;
+        public InputAction @RightTrack => m_Wrapper.m_DefaultActions_RightTrack;
         public InputActionMap Get() { return m_Wrapper.m_DefaultActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -206,6 +296,12 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
+            @LeftTrack.started += instance.OnLeftTrack;
+            @LeftTrack.performed += instance.OnLeftTrack;
+            @LeftTrack.canceled += instance.OnLeftTrack;
+            @RightTrack.started += instance.OnRightTrack;
+            @RightTrack.performed += instance.OnRightTrack;
+            @RightTrack.canceled += instance.OnRightTrack;
         }
 
         private void UnregisterCallbacks(IDefaultActionsActions instance)
@@ -216,6 +312,12 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
+            @LeftTrack.started -= instance.OnLeftTrack;
+            @LeftTrack.performed -= instance.OnLeftTrack;
+            @LeftTrack.canceled -= instance.OnLeftTrack;
+            @RightTrack.started -= instance.OnRightTrack;
+            @RightTrack.performed -= instance.OnRightTrack;
+            @RightTrack.canceled -= instance.OnRightTrack;
         }
 
         public void RemoveCallbacks(IDefaultActionsActions instance)
@@ -237,5 +339,7 @@ public partial class @GameInputs: IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
+        void OnLeftTrack(InputAction.CallbackContext context);
+        void OnRightTrack(InputAction.CallbackContext context);
     }
 }
