@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Core.MonoPool;
 using Core.Player;
+using Core.StorageComponents.Storages;
 using Core.Tanks.AI;
 using Core.Tanks.Events;
 using Cysharp.Threading.Tasks;
 using EventSystemComponents;
+using SaveLoad;
 using UnityEngine;
 using Zenject;
 namespace Core.Tanks.Spawn
@@ -15,7 +18,7 @@ namespace Core.Tanks.Spawn
     [SerializeField]
     private PlayerTank _playerPrefab;
     [SerializeField]
-    private Transform _playerSpawnPoint;
+    private List<Transform> _playerSpawnPoints;
     [SerializeField]
     private float _playerRespawnTime = 1;
 
@@ -35,6 +38,7 @@ namespace Core.Tanks.Spawn
 
     private DiContainer _container;
     private EventManager _eventManager;
+    private Storage<FieldTanksData> _storage;
 
     private PlayerTank _player;
 
@@ -48,14 +52,57 @@ namespace Core.Tanks.Spawn
     {
       CreatePool();
       SpawnPlayer();
+      SpawnSavedTanks();
       StartSpawningAi();
     }
 
+    private void OnApplicationQuit()
+    {
+      List<BaseAi> spawnedTanks = _spawnedTanks.Values.ToList();
+
+      FieldTanksData data = new FieldTanksData
+      {
+        Tanks = spawnedTanks.Select(t => new TankSaveData
+        {
+          Id = t.Id,
+          TankType = t.GetType(),
+          TransformData = new TankPositionSaveData
+          {
+            Position = new CustomVector3(t.transform.position),
+            Rotation = new CustomVector3(t.transform.rotation)
+          }
+        }).ToList(),
+        Player = new TankPositionSaveData
+        {
+          Position = new CustomVector3(_player.transform.position),
+          Rotation = new CustomVector3(_player.transform.rotation)
+        }
+      };
+
+
+      _storage.UpdateData(data);
+    }
+
     [Inject]
-    public void Construct (DiContainer container, EventManager eventManager)
+    public void Construct (DiContainer container, EventManager eventManager, Storage<FieldTanksData> storage)
     {
       _container = container;
       _eventManager = eventManager;
+      _storage = storage;
+    }
+
+    private async void SpawnSavedTanks()
+    {
+      if (_storage.Data.Tanks.Count == 0) {
+        return;
+      }
+
+      foreach (TankSaveData tank in _storage.Data.Tanks) {
+        SpawnTank(tank);
+      }
+
+      _player.transform.position = _storage.Data.Player.Position.ToVector3();
+      _player.transform.rotation = _storage.Data.Player.Rotation.ToQuaternion();
     }
 
     private void HandleTankDestroy (DestroyAiTankEvent eventData)
@@ -78,8 +125,8 @@ namespace Core.Tanks.Spawn
     private async void StartSpawningAi()
     {
       do {
-        SpawnTank();
         await UniTask.WaitForSeconds(_spawnInterval);
+        SpawnTank();
       } while (true);
     }
 
@@ -93,7 +140,7 @@ namespace Core.Tanks.Spawn
       }
 
       _player.gameObject.SetActive(true);
-      _player.transform.position = _playerSpawnPoint.transform.position;
+      _player.transform.position = _playerSpawnPoints[Random.Range(0, _playerSpawnPoints.Count)].position;
       _player.transform.rotation = Quaternion.identity;
       _player.HandleSpawn();
     }
@@ -120,6 +167,18 @@ namespace Core.Tanks.Spawn
       _spawnedTanks.Add(tank.Id, tank);
 
       tank.gameObject.SetActive(true);
+    }
+
+    private void SpawnTank (TankSaveData data)
+    {
+      BaseAi tank = _tanksPool.GetByType(data.TankType);
+      tank.SetId(data.Id);
+      tank.transform.position = data.TransformData.Position.ToVector3();
+      tank.transform.position = new Vector3(tank.transform.position.x, 1, tank.transform.position.z);
+      tank.transform.rotation = data.TransformData.Rotation.ToQuaternion();
+      _spawnedTanks.Add(tank.Id, tank);
+      tank.gameObject.SetActive(true);
+
     }
   }
 }

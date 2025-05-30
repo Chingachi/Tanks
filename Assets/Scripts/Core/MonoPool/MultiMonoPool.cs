@@ -24,11 +24,6 @@ namespace Core.MonoPool
         Type type = prefab.GetType();
         _prefabs[type] = prefab;
         _pools[type] = new Queue<TBase>();
-
-        for (int i = 0; i < initialPerPrefab; i++) {
-          TBase instance = CreateInactive(prefab);
-          _pools[type].Enqueue(instance);
-        }
       }
     }
 
@@ -53,7 +48,7 @@ namespace Core.MonoPool
       _pools[type].Enqueue(tank);
     }
 
-    private TBase GetByType (Type type)
+    public TBase GetByType (Type type)
     {
       Queue<TBase> queue = _pools[type];
 

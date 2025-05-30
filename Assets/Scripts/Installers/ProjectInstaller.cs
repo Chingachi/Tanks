@@ -1,5 +1,4 @@
-using Core.StorageComponents;
-using Core.StorageComponents.Storages;
+using Common.SceneControllerComponents;
 using Zenject;
 namespace Installers
 {
@@ -7,7 +6,7 @@ namespace Installers
   {
     public override void InstallBindings()
     {
-      Container.Bind<Storage<SessionData>>().To<FileStorage<SessionData>>().AsCached();
+      Container.Bind<SceneController>().AsSingle();
     }
   }
 }

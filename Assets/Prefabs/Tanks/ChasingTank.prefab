@@ -141,9 +141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a8bb2783b964b958d08922c22bb0fb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectileLayer:
-    serializedVersion: 2
-    m_Bits: 512
   _context:
     Rigidbody: {fileID: 4429425587554256044}
     Transform: {fileID: 5966337280381014114}
@@ -236,7 +233,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 2
 --- !u!1 &6877220789443448928

@@ -142,9 +142,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd902dc627914f928b1fa7a89a3dbd8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectileLayer:
-    serializedVersion: 2
-    m_Bits: 512
   _context:
     MoveSpeed: 5
     RotationSpeed: 30
@@ -159,12 +156,6 @@ MonoBehaviour:
     Player: {fileID: 0}
     ShootingContext:
       ShootingAnchor: {fileID: 6990624092182134995}
-      LaunchLayer:
-        serializedVersion: 2
-        m_Bits: 128
-      TargetLayer:
-        serializedVersion: 2
-        m_Bits: 256
       CooldownTime: 1
 --- !u!23 &4329971037833934487
 MeshRenderer:
@@ -253,7 +244,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 2
 --- !u!1 &6877220789443448928

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Core.MonoPool;
 using Core.Player.Movement;
 using Core.Player.Movement.Base;
@@ -7,6 +8,8 @@ using Core.Player.Shooting.Base;
 using Core.Player.Shooting.FrontShooting;
 using Core.Player.Shooting.TurretShooting;
 using Core.Projectiles;
+using Core.StorageComponents.Storages;
+using SaveLoad;
 using UnityEngine;
 using Utils;
 using Zenject;
@@ -30,6 +33,8 @@ namespace Core.Player
     private SimpleMonoObjectPool<Projectile> _projectilePool;
     [Inject]
     private DiContainer _container;
+    [Inject]
+    private Storage<SessionData> _storage;
 
     private BaseMovementSchema _movementSchema;
     private BaseShootingSchema _shootingSchema;
@@ -40,8 +45,7 @@ namespace Core.Player
     private void Start()
     {
       InitContexts();
-      SetMovementSchema<ClassicMovementSchema>();
-      SetShootingSchema<TurretShootingSchema>();
+      InitSchemas();
     }
 
     private void Update()
@@ -52,6 +56,14 @@ namespace Core.Player
     private void FixedUpdate()
     {
       _movementSchema.UpdateMovement();
+    }
+
+    private void OnApplicationQuit()
+    {
+      SessionData data = _storage.Data;
+      data.MovementSchemeType = _movementSchema.GetType();
+      data.ShootingSchemeType = _shootingSchema.GetType();
+      _storage.UpdateData(data);
     }
 
     private void OnTriggerEnter (Collider collision)
@@ -69,7 +81,7 @@ namespace Core.Player
 
     private void OnCollisionEnter (Collision collision)
     {
-      if (((1 << collision.gameObject.layer) & Layers.Enemy) == 0) {
+      if (collision.gameObject.layer != Layers.Enemy) {
         return;
       }
 
@@ -79,6 +91,30 @@ namespace Core.Player
     public void HandleSpawn()
     {
       Alive = true;
+    }
+
+    private void InitSchemas()
+    {
+      SessionData data = _storage.Data;
+
+      if (data.MovementSchemeType != null && data.ShootingSchemeType != null) {
+        InvokeGeneric(nameof(SetMovementSchema), data.MovementSchemeType);
+        InvokeGeneric(nameof(SetShootingSchema), data.ShootingSchemeType);
+      } else {
+        SetMovementSchema<ClassicMovementSchema>();
+        SetShootingSchema<TurretShootingSchema>();
+      }
+    }
+
+    private void InvokeGeneric (string methodName, Type genericType)
+    {
+      MethodInfo method = GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+      MethodInfo generic = method.MakeGenericMethod(genericType);
+
+      int paramCount = method.GetParameters().Length;
+      object [] args = new object[paramCount];
+
+      generic.Invoke(this, args);
     }
 
     private void HandleDeath()

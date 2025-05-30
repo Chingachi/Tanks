@@ -46,6 +46,11 @@ namespace Core.Tanks.AI
       HandleDestruction();
     }
 
+    public void SetId (string id)
+    {
+      Id = id;
+    }
+
     protected abstract void RunFirstState();
 
     protected virtual void ChangeState<T>()
