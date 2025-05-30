@@ -11,13 +11,6 @@ namespace Common.SceneControllerComponents
       return AsyncUnit.Default;
     }
 
-    public async UniTask<AsyncUnit> GoToHub()
-    {
-      await ChangeScene("HubScene");
-
-      return AsyncUnit.Default;
-    }
-
     public async UniTask<AsyncUnit> GoToGame()
     {
       await ChangeScene("GameScene");

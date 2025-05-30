@@ -73,7 +73,6 @@ namespace Core.Tanks.AI
 
     protected virtual void HandleDestruction()
     {
-      Debug.Log("Handle destruction");
       _eventManager.Fire(new DestroyAiTankEvent(Id));
     }
 

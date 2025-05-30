@@ -2,6 +2,7 @@
 using System.Linq;
 using Core.MonoPool;
 using Core.Player;
+using Core.Player.Events;
 using Core.StorageComponents.Storages;
 using Core.Tanks.AI;
 using Core.Tanks.Events;
@@ -46,6 +47,7 @@ namespace Core.Tanks.Spawn
     {
       _container.Inject(this);
       _eventManager.SubscribeEvent<DestroyAiTankEvent>(HandleTankDestroy);
+      _eventManager.SubscribeEvent<ResetEvent>(HandleReset);
     }
 
     private void Start()
@@ -76,9 +78,9 @@ namespace Core.Tanks.Spawn
         {
           Position = new CustomVector3(_player.transform.position),
           Rotation = new CustomVector3(_player.transform.rotation)
-        }
+        },
+        IsPlayerAlive = _player.Alive
       };
-
 
       _storage.UpdateData(data);
     }
@@ -91,6 +93,17 @@ namespace Core.Tanks.Spawn
       _storage = storage;
     }
 
+    private void HandleReset (ResetEvent eventData)
+    {
+      foreach (KeyValuePair<string, BaseAi> spawnedTank in _spawnedTanks) {
+        spawnedTank.Value.gameObject.SetActive(false);
+        _tanksPool.Return(spawnedTank.Value);
+      }
+
+      _spawnedTanks.Clear();
+      SpawnPlayer();
+    }
+
     private async void SpawnSavedTanks()
     {
       if (_storage.Data.Tanks.Count == 0) {
@@ -101,8 +114,10 @@ namespace Core.Tanks.Spawn
         SpawnTank(tank);
       }
 
-      _player.transform.position = _storage.Data.Player.Position.ToVector3();
-      _player.transform.rotation = _storage.Data.Player.Rotation.ToQuaternion();
+      if (_storage.Data.IsPlayerAlive) {
+        _player.transform.position = _storage.Data.Player.Position.ToVector3();
+        _player.transform.rotation = _storage.Data.Player.Rotation.ToQuaternion();
+      }
     }
 
     private void HandleTankDestroy (DestroyAiTankEvent eventData)
@@ -178,7 +193,6 @@ namespace Core.Tanks.Spawn
       tank.transform.rotation = data.TransformData.Rotation.ToQuaternion();
       _spawnedTanks.Add(tank.Id, tank);
       tank.gameObject.SetActive(true);
-
     }
   }
 }

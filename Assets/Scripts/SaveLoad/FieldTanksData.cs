@@ -7,6 +7,7 @@ namespace SaveLoad
   {
     public List<TankSaveData> Tanks = new List<TankSaveData>();
     public TankPositionSaveData Player;
+    public bool IsPlayerAlive;
   }
 
   [Serializable]

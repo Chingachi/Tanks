@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Core.MonoPool;
+using Core.Player.Events;
 using Core.Player.Movement;
 using Core.Player.Movement.Base;
 using Core.Player.Shooting.Base;
@@ -9,6 +10,7 @@ using Core.Player.Shooting.FrontShooting;
 using Core.Player.Shooting.TurretShooting;
 using Core.Projectiles;
 using Core.StorageComponents.Storages;
+using EventSystemComponents;
 using SaveLoad;
 using UnityEngine;
 using Utils;
@@ -35,6 +37,8 @@ namespace Core.Player
     private DiContainer _container;
     [Inject]
     private Storage<SessionData> _storage;
+    [Inject]
+    private EventManager _eventManager;
 
     private BaseMovementSchema _movementSchema;
     private BaseShootingSchema _shootingSchema;
@@ -44,6 +48,8 @@ namespace Core.Player
 
     private void Start()
     {
+      _eventManager.SubscribeEvent<ChangeShootingTypeEvent>(HandleShootingSchemaChange);
+      _eventManager.SubscribeEvent<ChangeMovementTypeEvent>(HandleMovementSchemaChange);
       InitContexts();
       InitSchemas();
     }
@@ -56,6 +62,13 @@ namespace Core.Player
     private void FixedUpdate()
     {
       _movementSchema.UpdateMovement();
+    }
+
+
+    private void OnDestroy()
+    {
+      _eventManager.UnsubscribeEvent<ChangeShootingTypeEvent>(HandleShootingSchemaChange);
+      _eventManager.UnsubscribeEvent<ChangeMovementTypeEvent>(HandleMovementSchemaChange);
     }
 
     private void OnApplicationQuit()
@@ -93,6 +106,18 @@ namespace Core.Player
       Alive = true;
     }
 
+    private void HandleMovementSchemaChange (ChangeMovementTypeEvent eventData)
+    {
+      _movementSchema.Deactivate();
+      InvokeGeneric(nameof(SetMovementSchema), eventData.MovementType);
+    }
+
+    private void HandleShootingSchemaChange (ChangeShootingTypeEvent eventData)
+    {
+      _shootingSchema.Deactivate();
+      InvokeGeneric(nameof(SetShootingSchema), eventData.ShootingType);
+    }
+
     private void InitSchemas()
     {
       SessionData data = _storage.Data;
@@ -119,6 +144,7 @@ namespace Core.Player
 
     private void HandleDeath()
     {
+      _eventManager.Fire(new PlayerDeathEvent());
       Alive = false;
       OnDeath?.Invoke();
     }
@@ -155,6 +181,7 @@ namespace Core.Player
       {
         context.Inputs = _inputs;
         context.ProjectilePool = _projectilePool;
+        context.Player = this;
       }
     }
 
@@ -182,6 +209,8 @@ namespace Core.Player
 
         return;
       }
+
+      Debug.Log("change shooting schema");
 
       _shootingSchema = _container.Instantiate<T>(new object []
       {

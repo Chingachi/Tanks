@@ -16,13 +16,16 @@ namespace Core.Player.Shooting.Base
       _context.Inputs.DefaultActions.Fire.performed += HandleShootingTrigger;
     }
 
-    ~BaseShootingSchema()
+    public override void Deactivate()
     {
       _context.Inputs.DefaultActions.Fire.performed -= HandleShootingTrigger;
     }
 
     protected override void HandleShootingTrigger (InputAction.CallbackContext inputCallback)
     {
+      if (!_context.Player.Alive) {
+        return;
+      }
 
       Projectile projectile = _context.ProjectilePool.Get();
       projectile.transform.position = _context.ShootingAnchor.transform.position;
@@ -50,6 +53,9 @@ namespace Core.Player.Shooting.Base
   }
   public abstract class BaseShootingSchema
   {
+
+    public abstract void Deactivate();
+
     protected abstract void HandleShootingTrigger (InputAction.CallbackContext inputCallback);
   }
 }

@@ -19,6 +19,9 @@ namespace Core.Player.Movement.Base
       _inputs = context.Inputs;
       _inputs.Enable();
     }
+
+    public override void Deactivate()
+    {}
   }
   public abstract class BaseMovementSchema
   {
@@ -26,5 +29,7 @@ namespace Core.Player.Movement.Base
     public abstract void HandleInput();
 
     public abstract void UpdateMovement();
+
+    public abstract void Deactivate();
   }
 }

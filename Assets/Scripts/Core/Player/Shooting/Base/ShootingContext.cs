@@ -10,6 +10,7 @@ namespace Core.Player.Shooting.Base
     public SimpleMonoObjectPool<Projectile> ProjectilePool;
     public GameInputs Inputs;
     public Transform ShootingAnchor;
+    public PlayerTank Player;
     public float CooldownTime;
   }
 }
