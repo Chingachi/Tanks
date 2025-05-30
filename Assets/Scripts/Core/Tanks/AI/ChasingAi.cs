@@ -4,7 +4,6 @@ using Core.Tanks.States.Base;
 using Core.Tanks.States.Chasing;
 using Core.Tanks.States.Idle;
 using UnityEngine;
-using Zenject;
 namespace Core.Tanks.AI
 {
   public class ChasingAi : BaseAi
@@ -12,8 +11,6 @@ namespace Core.Tanks.AI
     [SerializeField]
     private ChasingStateContext _context;
 
-    [Inject]
-    private DiContainer _container;
 
     private void FixedUpdate()
     {

@@ -41,8 +41,7 @@ namespace Core.MonoPool
 
     private T CreateNewObject()
     {
-      T newObject = Object.Instantiate(_prefab, _parent);
-      _container.Inject(newObject);
+      T newObject = _container.InstantiatePrefabForComponent<T>(_prefab, _parent);
       newObject.gameObject.SetActive(false);
 
       return newObject;

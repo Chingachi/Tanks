@@ -22,16 +22,16 @@ namespace Core.Tanks.Spawn
     [SerializeField]
     private SpawnPoint [] _spawnPoints;
     [SerializeField]
-    private BaseAi _baseTankAiPrefab; //TODO: Change when it comes to polymorph mechanics
+    private TanksDatabase _database;
 
     [SerializeField]
     private Transform _tanksContainer;
     [SerializeField]
-    private float _spawnInterval = 2f; //TODO: Move to settings
+    private float _spawnInterval = 2f;
     [SerializeField]
     private int _tanksLimit = 20;
 
-    private SimpleMonoObjectPool<BaseAi> _tanksPool;
+    private MultiMonoPool<BaseAi> _tanksPool;
 
     private DiContainer _container;
     private EventManager _eventManager;
@@ -72,7 +72,7 @@ namespace Core.Tanks.Spawn
 
     private void CreatePool()
     {
-      _tanksPool = new SimpleMonoObjectPool<BaseAi>(_container, _baseTankAiPrefab, _tanksContainer, _tanksLimit);
+      _tanksPool = new MultiMonoPool<BaseAi>(_container, _database.TankList, _tanksContainer);
     }
 
     private async void StartSpawningAi()
@@ -111,7 +111,7 @@ namespace Core.Tanks.Spawn
         return;
       }
 
-      BaseAi tank = _tanksPool.Get();
+      BaseAi tank = _tanksPool.GetRandom();
       Transform spawnPoint = _spawnPoints[Random.Range(0, _spawnPoints.Length)].transform;
 
       tank.transform.position = spawnPoint.position;

@@ -1945,10 +1945,10 @@ MonoBehaviour:
   - {fileID: 1674181075}
   - {fileID: 1327841658}
   - {fileID: 1414470162}
-  _baseTankAiPrefab: {fileID: -4683726187249604604, guid: d44d7ab9aa4707540a2087ed41a8a266, type: 3}
+  _database: {fileID: 11400000, guid: 7e43dbd45e370664c8e1f70c0be57888, type: 2}
   _tanksContainer: {fileID: 581791311}
   _spawnInterval: 1
-  _tanksLimit: 25
+  _tanksLimit: 5
 --- !u!1 &2138385623
 GameObject:
   m_ObjectHideFlags: 0

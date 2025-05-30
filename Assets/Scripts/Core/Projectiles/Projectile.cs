@@ -11,17 +11,15 @@ namespace Core.Projectiles
     [Inject]
     private EventManager _eventManager;
 
-    private LayerMask _shooterLayer;
 
     private void OnTriggerEnter (Collider collision)
     {
-      int collisionLayer = 1 << collision.gameObject.layer;
 
-      if ((collisionLayer & _shooterLayer) != 0) {
+      if (collision.gameObject.layer == ShooterLayer) {
         return;
       }
 
-      if ((collisionLayer & TargetLayers) != 0) {
+      if (collision.gameObject.layer == TargetLayers) {
         HandleCollisionWithTarget(collision);
 
         return;
@@ -30,9 +28,9 @@ namespace Core.Projectiles
       OnHit?.Invoke(this);
     }
 
-    public void SetLayers (LayerMask shooter, LayerMask target)
+    public void SetLayers (int shooter, int target)
     {
-      _shooterLayer = shooter;
+      ShooterLayer = shooter;
       TargetLayers = target;
     }
 
@@ -42,7 +40,12 @@ namespace Core.Projectiles
       OnHit?.Invoke(this);
     }
 
-    public LayerMask TargetLayers
+    public int TargetLayers
+    {
+      get;
+      private set;
+    }
+    public int ShooterLayer
     {
       get;
       private set;

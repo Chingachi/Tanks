@@ -63,7 +63,10 @@ namespace Core.Tanks.States.SimpleMovements
 
       Vector3 normal = collision.contacts[0].normal;
       normal.y = 0f;
-      _targetRotation = Quaternion.LookRotation(normal);
+
+      if (normal.sqrMagnitude > 0.001f) {
+        _targetRotation = Quaternion.LookRotation(normal);
+      }
 
       ResetTimer();
     }

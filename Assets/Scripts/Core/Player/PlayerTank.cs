@@ -28,6 +28,8 @@ namespace Core.Player
     private GameInputs _inputs;
     [Inject]
     private SimpleMonoObjectPool<Projectile> _projectilePool;
+    [Inject]
+    private DiContainer _container;
 
     private BaseMovementSchema _movementSchema;
     private BaseShootingSchema _shootingSchema;
@@ -54,13 +56,11 @@ namespace Core.Player
 
     private void OnTriggerEnter (Collider collision)
     {
-      if (((1 << collision.gameObject.layer) & Layers.Projectile) == 0) {
-        Debug.Log(1);
-
+      if (collision.gameObject.layer != Layers.Projectile) {
         return;
       }
 
-      if (((1 << collision.gameObject.GetComponent<Projectile>().TargetLayers) & Layers.Player) != 0) {
+      if (collision.gameObject.GetComponent<Projectile>().ShooterLayer == Layers.Player) {
         return;
       }
 
@@ -147,7 +147,10 @@ namespace Core.Player
         return;
       }
 
-      _shootingSchema = (T)Activator.CreateInstance(type, _shootingContexts[type]);
+      _shootingSchema = _container.Instantiate<T>(new object []
+      {
+        _shootingContexts[type]
+      });
     }
 
     public bool Alive

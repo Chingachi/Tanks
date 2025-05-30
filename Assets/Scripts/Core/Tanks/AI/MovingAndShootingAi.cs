@@ -16,8 +16,6 @@ namespace Core.Tanks.AI
     private SimpleMoveAndShootStateContext _context;
 
     [Inject]
-    private DiContainer _container;
-    [Inject]
     private SimpleMonoObjectPool<Projectile> _projectilePool;
 
     private void FixedUpdate()

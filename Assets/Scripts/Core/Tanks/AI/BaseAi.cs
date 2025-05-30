@@ -12,11 +12,10 @@ namespace Core.Tanks.AI
   [RequireComponent(typeof(Rigidbody))]
   public abstract class BaseAi : MonoBehaviour
   {
-
     [Inject]
     protected readonly EventManager _eventManager;
-    [SerializeField]
-    private LayerMask _projectileLayer;
+    [Inject]
+    protected DiContainer _container;
 
     protected Dictionary<Type, BaseTankState> _states;
 
@@ -33,13 +32,14 @@ namespace Core.Tanks.AI
       RunFirstState();
     }
 
-    private void OnTriggerEnter (Collider other)
+    private void OnTriggerEnter (Collider trigger)
     {
-      if (((1 << other.gameObject.layer) & _projectileLayer) == 0) {
+      if (trigger.gameObject.layer != Layers.Projectile) {
         return;
       }
 
-      if (((1 << other.gameObject.GetComponent<Projectile>().TargetLayers) & Layers.Enemy) == 0) {
+      if (trigger.gameObject.GetComponent<Projectile>().ShooterLayer == Layers.Enemy) {
+
         return;
       }
 
@@ -68,6 +68,7 @@ namespace Core.Tanks.AI
 
     protected virtual void HandleDestruction()
     {
+      Debug.Log("Handle destruction");
       _eventManager.Fire(new DestroyAiTankEvent(Id));
     }
 
